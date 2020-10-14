@@ -30,13 +30,28 @@ pipeline {
       //  }
 
     
-    stage('Deploy App') {
+    stage ('deploy k8s ssh agent method') {
       steps {
-        script {
-          kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "KUBERNETES_CLUSTER_CONFIG_MAY")
-        }
-      }
+       sshagent(['k8s-master']) {
+        sh "scp -o StrictHostKeyChecking=no hellowhale.yml ubuntu@172.31.22.213:/home/ubuntu/"
+         script {
+           try {
+             sh "ssh ubuntu@172.31.22.213 kubectl apply -f ."
+                        }
+           catch(error){
+           sh "ssh ubuntu@172.31.22.213 kubectl create -f ."}
+         }
+}
+      } 
     }
+    
+   // stage('Deploy App') {
+   //   steps {
+   //     script {
+   //       kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "KUBERNETES_CLUSTER_CONFIG_MAY")
+   //     }
+   //   }
+   // }
 
   }
 
