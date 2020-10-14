@@ -36,10 +36,12 @@ pipeline {
         sh "scp -o StrictHostKeyChecking=no hellowhale.yml ubuntu@172.31.22.213:/home/ubuntu/"
          script {
            try {
-             sh "ssh ubuntu@172.31.22.213 kubectl apply -f . -i /root/key.pem"
+             sh "ssh ubuntu@172.31.22.213 -i /root/key.pem"
+             sh "kubectl apply -f ."
                         }
            catch(error){
-           sh "ssh ubuntu@172.31.22.213 kubectl create -f . -i /root/key.pem"}
+           sh "ssh ubuntu@172.31.22.213 -i /root/key.pem"
+           sh "kubectl create -f ."}
          }
 }
       } 
